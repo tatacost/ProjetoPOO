@@ -2,6 +2,8 @@ package org.serratec.trabalho.poo.modelos;
 
 import java.util.List;
 
+import org.serratec.trabalho.poo.principal.RelatorioConsole;
+
 public class Funcionario extends Pessoa implements GerarRelatorio{
 	private String cargo;
 

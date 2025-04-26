@@ -1,15 +1,14 @@
 package org.serratec.trabalho.poo.modelos;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 //Achei desnecessário 
 public class Aluno extends Pessoa /**implements GerarRelatorio**/ {
 	private LocalDate dtMatricula;
 	private Planos plano;
 	private String personalContratado;
-
-
-
-
+	private List<String> avaliacoesFisicas = new ArrayList<>();
 
 	public Aluno(String nome, String cpf, String senha, LocalDate dtMatricula, Planos plano) {
 		super(nome, cpf, senha);
@@ -54,10 +53,22 @@ public class Aluno extends Pessoa /**implements GerarRelatorio**/ {
 	}
 
 
+	public List<String> getAvaliacoesFisicas() {
+	    return avaliacoesFisicas;
+	}
+
+	public void adicionarAvaliacaoFisica(String avaliacao) {
+	    avaliacoesFisicas.add(avaliacao);
+	}
+
+	
+	
+	
 	public void exibirDados() {
 		System.out.println("Aluno: " + getNome() +  " | Cpf: " + getCpf() + " | Plano: " + plano + " | Personal Contratado: " + personalContratado);
 
 	}
+
 
 
 	//

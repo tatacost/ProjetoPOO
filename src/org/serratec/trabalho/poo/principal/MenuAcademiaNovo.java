@@ -1,6 +1,7 @@
 package org.serratec.trabalho.poo.principal;
 
 import org.serratec.trabalho.poo.exceptions.SenhaIncorretaException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +19,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import org.serratec.trabalho.poo.modelos.Aluno;
+import org.serratec.trabalho.poo.modelos.Avaliacao;
 import org.serratec.trabalho.poo.modelos.Funcionario;
 import org.serratec.trabalho.poo.modelos.Personal;
 import org.serratec.trabalho.poo.modelos.Pessoa;
@@ -27,12 +29,13 @@ import org.serratec.trabalho.poo.modelos.TipoPlano;
 
 public class MenuAcademiaNovo {
 	Scanner leitura = new Scanner(System.in);
-	private List<Aluno> alunos = new ArrayList<>();
-	private List<Personal> personais = new ArrayList<>();
-	private List<Funcionario> funcionarios = new ArrayList<>();
-	private List<Planos> planos = new ArrayList<>();
-	private Map<String, Pessoa> usuarios = new HashMap<>();
-	private Set<String> cpfsCadastrados = new HashSet<>();
+	 public static List<Aluno> alunos = new ArrayList<>();
+	 public static List<Personal> personais = new ArrayList<>();
+	 public static List<Funcionario> funcionarios = new ArrayList<>();
+	 public static List<Avaliacao> avaliacoes = new ArrayList<>();
+	 public static List<Planos> planos = new ArrayList<>();
+	 public static Map<String, Pessoa> usuarios = new HashMap<>();
+	 public static Set<String> cpfsCadastrados = new HashSet<>();
 	
 	public void iniciar() {
 		planos.add(new Planos("Boxe", TipoPlano.LUTAS, 80));
@@ -57,7 +60,7 @@ public class MenuAcademiaNovo {
 				String cpf = campos[1];				
 				String senha = campos[2];
 				LocalDate dtMatricula  =  LocalDate.parse(campos[3]);
-				int indice = Integer.parseInt(campos[4]);				
+				int indice = Integer.parseInt(campos[4])-1;				
 				Planos plano = planos.get(indice);						
 				alunos.add(new Aluno(nome,cpf,senha,dtMatricula,plano));
 				usuarios.put(cpf, new Aluno(nome,cpf,senha,dtMatricula,plano));
@@ -91,7 +94,7 @@ public class MenuAcademiaNovo {
 				cpfsCadastrados.add(cpf);
 
 			}
-			funcionarios.forEach(f -> f.exibirDados());
+			//funcionarios.forEach(f -> f.exibirDados());
 		}catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -127,11 +130,48 @@ public class MenuAcademiaNovo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		path = Paths.get(".\\src\\org\\serratec\\trabalho\\poo\\arquivos\\avaliacoes.csv");
 
 
+        try (BufferedReader reader = Files.newBufferedReader(path)){
+            String linha = reader.readLine();//ignora o cabeçalho
+
+            while((linha = reader.readLine()) != null) {
+                String[] campos = linha.split(",");
+                String nome = campos[0];
+                LocalDate dtMatricula  =  LocalDate.parse(campos[1]);
+                String personal = campos[2];
+                String descricao = campos[3];
+
+                Aluno alunoEncontrado = null;
+                for (Aluno a : alunos) {
+                    if (a.getNome().equalsIgnoreCase(nome)) {
+                        alunoEncontrado = a;
+                        break;
+                     }
+                }
+
+                Personal personalEncontrado = null;
+                for (Personal p : personais) {
+                    if (p.getNome().equalsIgnoreCase(personal)) {
+                        personalEncontrado = p;
+                        break;
+                    }
+                }
+
+                avaliacoes.add(new Avaliacao(alunoEncontrado, dtMatricula, personalEncontrado, descricao));
+            } 
+            //avaliacoes.forEach(a -> a.exibirDados());
+        }catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+		
+	
 		System.out.println("Usuários lidos do arquivo csv!!!");
 
-		System.out.println(usuarios);
+		//System.out.println(usuarios);
 		
 		
 	/*	for(int i = 0;i< usuarios.size();i++) {
@@ -188,11 +228,12 @@ public class MenuAcademiaNovo {
 			Pessoa usuario = autenticarUsuario(cpf, senha);
 
 			if (usuario != null) {
-				if (usuario instanceof Aluno) {
-					MenuAluno.menuAluno((Aluno) usuario);
-				} else if (usuario instanceof Personal) {
-					MenuPersonal.menuPersonal((Personal) usuario);
-				} else if (usuario instanceof Funcionario) {
+				if (usuario instanceof Aluno aluno) {
+					MenuAluno.menuAluno(aluno);;
+				} else if (usuario instanceof Personal personal) {
+					MenuPersonal menuPersonal = new MenuPersonal();					
+					menuPersonal.menuPersonal((Personal) usuario);
+				} else if (usuario instanceof Funcionario funcionario) {
 					MenuFuncionarios menuFuncionarios = new MenuFuncionarios();
 					menuFuncionarios.menuFuncionario((Funcionario) usuario, usuarios);
 				}
@@ -202,4 +243,6 @@ public class MenuAcademiaNovo {
 		}
 
 	}
+
+	
 }

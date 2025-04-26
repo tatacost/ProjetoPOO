@@ -1,5 +1,7 @@
 package org.serratec.trabalho.poo.modelos;
 
+import java.util.Set;
+
 public class Planos /**implements GerarRelatorio**/{
 	private  String nomePlano;
 	private  TipoPlano tipoPlano;
@@ -52,11 +54,17 @@ public class Planos /**implements GerarRelatorio**/{
 	}
 
 
+	public Set<Aluno> getAlunosInscritos() {		
+		return getAlunosInscritos();
+	}
+
 
 	@Override
 	public String toString() {
 		return "Nome: " + nomePlano + " | Tipo de Plano: " + tipoPlano + " | Valor:" + valorPlano;
 	}
+
+
 
 
 	

@@ -48,6 +48,12 @@ public class Avaliacao {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
+
+
+	public void exibirDados() {
+        System.out.println("Aluno: " + getAluno() +  " | Data: " + getData() + " | Personal: " + getPersonal() + " | Descrição: " + getDescricao());
+		
+	}
 	
 	
 	

@@ -22,17 +22,16 @@ import org.serratec.trabalho.poo.modelos.GerarRelatorio;
 import org.serratec.trabalho.poo.modelos.Personal;
 import org.serratec.trabalho.poo.modelos.Pessoa;
 import org.serratec.trabalho.poo.modelos.Planos;
-import org.serratec.trabalho.poo.modelos.RelatorioConsole;
 import org.serratec.trabalho.poo.modelos.TipoPlano;
 
 public class  MenuFuncionarios {
-	 Scanner leitura = new Scanner(System.in);
-	//Lista separadas para cada tipo de pessoa e plano
-	static List<Aluno> alunos = new ArrayList<>();
-	static List<Personal> personais = new ArrayList<>();
-	static List<Funcionario> funcionarios = new ArrayList<>();
-	static List<Planos> planos = new ArrayList<>();
-	static Map<String, Pessoa> usuarios = new HashMap<>();
+	Scanner leitura = new Scanner(System.in);
+	//	//Lista separadas para cada tipo de pessoa e plano
+	//	 public List<Aluno> alunos = new ArrayList<>();
+	//	static List<Personal> personais = new ArrayList<>();
+	//	static List<Funcionario> funcionarios = new ArrayList<>();
+	//	static List<Planos> planos = new ArrayList<>();
+	//	static Map<String, Pessoa> usuarios = new HashMap<>();
 
 	//Set para rastrear todos os CPFs usados
 	static Set<String> cpfsCadastrados = new HashSet<>();
@@ -43,9 +42,9 @@ public class  MenuFuncionarios {
 
 
 	public  void menuFuncionario(Funcionario usuario2, Map<String, Pessoa> usuarios) {
-		planos.add(new Planos("Boxe", TipoPlano.LUTAS, 80));
-		planos.add(new Planos("Zumba", TipoPlano.DANCA, 70));
-		planos.add(new Planos("Musculaçao", TipoPlano.MUSCULACAO, 100));
+		//		MenuAcademiaNovo.planos.add(new Planos("Boxe", TipoPlano.LUTAS, 80));
+		//		MenuAcademiaNovo.planos.add(new Planos("Zumba", TipoPlano.DANCA, 70));
+		//		MenuAcademiaNovo.planos.add(new Planos("Musculaçao", TipoPlano.MUSCULACAO, 100));
 		int opcaoCadastro;
 		do {
 			String menu = """
@@ -94,19 +93,20 @@ public class  MenuFuncionarios {
 		String data = leitura.nextLine();
 		LocalDate dtMatricula = LocalDate.parse(data, formatter);
 		System.out.println("Escolha um plano:");
-		for (int i = 0; i < planos.size(); i++) {
-			System.out.println((i+1) + " - " + planos.get(i).getNomePlano());
+		for (int i = 0; i < MenuAcademiaNovo.planos.size(); i++) {
+			System.out.println((i+1) + " - " + MenuAcademiaNovo.planos.get(i).getNomePlano());
 		}     
 		int indice = - 1;
-		while(indice < 0 || indice >= planos.size()) {
+		while(indice < 0 || indice >= MenuAcademiaNovo.planos.size()) {
+			MenuAcademiaNovo.planos.forEach(System.out::println);
 			System.out.println("Qual o plano que deseja: ");
 			indice = leitura.nextInt() -1;
 		}
 
-		Planos planosEscolhido = planos.get(indice);
+		Planos planosEscolhido = MenuAcademiaNovo.planos.get(indice);
 
 
-		alunos.add(new Aluno(nome,cpf,senha,dtMatricula, planosEscolhido));
+		MenuAcademiaNovo.alunos.add(new Aluno(nome,cpf,senha,dtMatricula, planosEscolhido));
 		usuarios.put(cpf, new Aluno(nome,cpf,senha,dtMatricula,planosEscolhido));
 		cpfsCadastrados.add(cpf);
 
@@ -123,7 +123,7 @@ public class  MenuFuncionarios {
 		String cargo = leitura.nextLine();
 
 		Funcionario novoFuncionario = new Funcionario(nome, cpf, senha, cargo);
-		funcionarios.add(novoFuncionario);
+		MenuAcademiaNovo.funcionarios.add(novoFuncionario);
 		usuarios.put(cpf, novoFuncionario);
 
 		System.out.println("Funcionário cadastrado com sucesso!");
@@ -141,7 +141,7 @@ public class  MenuFuncionarios {
 		String cref = leitura.nextLine();
 
 		Personal novoPersonal = new Personal(nome, cpf, senha, especialidade, cref);
-		personais.add(novoPersonal);
+		MenuAcademiaNovo.personais.add(novoPersonal);
 		usuarios.put(cpf, novoPersonal);
 
 		System.out.println("Personal cadastrado com sucesso!");
@@ -149,32 +149,37 @@ public class  MenuFuncionarios {
 	private  void cadastrarPlano() {
 		System.out.println("Qual tipo do plano: ");
 		String nome = leitura.nextLine();
-		System.out.println("Qual o perido do plano: mensal/semestral/anual");
-		String tipoPlano = leitura.nextLine().toUpperCase();
-		//TipoPlano plano = TipoPlano.fromDescricao(tipoPlano);
+//		System.out.println("Qual o período do plano: mensal/semestral/anual");
+//		String periodo = leitura.nextLine();
+		System.out.println("Qual a modalidade ?");
+		String tipoDoPlano = leitura.nextLine().toUpperCase();
+		TipoPlano plano = TipoPlano.valueOf(tipoDoPlano);
 		System.out.println("Valor do pacote: ");
 		double valor = leitura.nextDouble();
 		leitura.nextLine();
-		//planos.add(new Planos(nome, plano, valor));
-		System.out.println("Funcionalidade de cadastro de plano ainda não implementada.");
+		MenuAcademiaNovo.planos.add(new Planos(nome, plano, valor));
+		System.out.println("Plano cadastrado com sucesso!");
 	}
 	private  Double valorAhReceber() {		
-		Double total = planos.stream().mapToDouble(Planos::getValorPlano).sum();
-	    		
-
-	    System.out.println("\nTotal a receber pelos planos: R$ " + total);
-	    return total;
+		Double total = 0.0;
+		
+		for(Aluno aluno  : MenuAcademiaNovo.alunos) {
+			total  += aluno.getPlano().getValorPlano();
+		}
+		
+		System.out.println("\nTotal a receber pelos planos: R$ " + total);
+		return total ;
 	}
 	private void emitirRelatorio() {
 		int opcaoCadastro;
 		do {
 			String menu = """
-					   \n=== MENU FUNCIONÁRIO ===
-					   1. Gerar relatório de planos
-					   2. Gerar relatório de Pessoas
-					   3. Gerar relação de avaliações físicas por período
-					   4. Voltar ao menu principal
-					   """;
+					\n=== MENU FUNCIONÁRIO ===
+					1. Gerar relatório de planos
+					2. Gerar relatório de Pessoas
+					3. Gerar relação de avaliações físicas 
+					4. Voltar ao menu principal
+					""";
 			System.out.println(menu);
 			opcaoCadastro = leitura.nextInt();
 			leitura.nextLine();
@@ -192,13 +197,13 @@ public class  MenuFuncionarios {
 	}
 	private  void relatorioPlanos() {
 		RelatorioConsole  relatorio = new RelatorioConsole();
-		relatorio.gerarRelatorioPlanos(planos);
+		relatorio.gerarRelatorioPlanos(MenuAcademiaNovo.planos);
 
 
 	}
 	private  void relatorioPessoas() {
 		RelatorioConsole  relatorio = new RelatorioConsole();
-		relatorio.gerarRelatorioPessoas(alunos, personais, funcionarios);
+		relatorio.gerarRelatorioPessoas(MenuAcademiaNovo.alunos, MenuAcademiaNovo.personais, MenuAcademiaNovo.funcionarios);
 
 
 	}
@@ -213,12 +218,12 @@ public class  MenuFuncionarios {
 
 	}	
 
-	private  void relatorioGeral() {
+	/*private  void relatorioGeral() {
 		RelatorioConsole  relatorio = new RelatorioConsole();
 		relatorio.gerarRelatorioGeral(alunos, personais, funcionarios, planos, avaliacoes);
 
 
-	}
+	}*/
 
 }
 
